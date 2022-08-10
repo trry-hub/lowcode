@@ -1,0 +1,23 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-standard-vue/scss"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.scss"],
+      "customSyntax": "postcss-scss"
+    }
+  ],
+  "plugins": [
+    "stylelint-scss"
+  ],
+  "rules": {
+    "at-rule-no-unknown": null,
+    "no-descending-specificity": null,
+    "property-no-unknown": null,
+    "font-family-no-missing-generic-family-keyword": null,
+    "selector-class-pattern": null,
+    "max-line-length": null
+  }
+}

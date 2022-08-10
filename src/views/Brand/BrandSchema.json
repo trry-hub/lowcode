@@ -1,0 +1,23 @@
+{
+  "title": "BrandSchema",
+  "version": "0.0.1",
+  "description": "活动基础信息",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "intro": "intro",
+      "description": "活动标题"
+    },
+    "intro": {
+      "type": "string",
+      "brandingTitleMap": "brandingTitle",
+      "description": "活动标题"
+    },
+    "content": {},
+    "organizer": {},
+    "showJson": {},
+    "status": {},
+    "coverUrl": {}
+  }
+}
