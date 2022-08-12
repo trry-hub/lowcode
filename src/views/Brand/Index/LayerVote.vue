@@ -1,20 +1,26 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import momentjs from '@/utils/momentjs'
+import moment from '@/utils/momentjs'
 const props = defineProps<{
-  vote: any
+  ctx: any,
+  data: any
 }>()
 
-momentjs.locale('zh-cn')
-
+const vote = computed(() => props.data.info)
 const keyword = ref('')
 const sort = ref('default')
-
+const sortRules = ref([{
+  label: '默认',
+  value: 'default'
+}, {
+  label: '人气',
+  value: 'sentiment'
+}])
 const formatTime = (time: string) => {
-  return momentjs(time).format('YYYY-MM-DD HH:mm:ss')
+  return moment(time).format('YYYY-MM-DD HH:mm:ss')
 }
 const fromNow = (): string => {
-  return momentjs(props.vote.endTime).to(props.vote.startTime)
+  return moment(vote.value.voteConfigInfo.voteStartTime).to(vote.value.voteConfigInfo.voteEndTime)
 }
 const isActive = (content: string) => {
   if (!keyword.value.trim()) return false
@@ -24,17 +30,11 @@ const changeSort = (key: string) => {
   sort.value = key
 }
 
-const total = computed(() => {
-  return props.vote.works?.reduce((total: number, item: any) => {
-    return total + item.vote
-  }, 0)
-})
-
 const showWorks = computed(() => {
-  const works = props.vote.works ? [...props.vote.works] : []
+  const works = vote.value.brandingMaterialInfos || []
   if (sort.value === 'default') return works
-  works.sort((a, b) => {
-    return b.vote - a.vote
+  works.sort((a:any, b:any) => {
+    return b.voteCount - a.voteCount
   })
   return works
 })
@@ -44,33 +44,36 @@ const showWorks = computed(() => {
   <div class="vote">
     <div class="header">
       <i class="font_family icon-password" />
-      <span>{{ vote.title }}</span>
+      <span>{{ vote.brandingTitle }}</span>
     </div>
 
     <div class="overview">
       <div class="overview-item">
         <div class="count">
-          {{ vote.candidateNum }}
+          {{ vote.brandingStatisticInfo.materialCount }}
         </div>
         <div class="name">参赛选手</div>
       </div>
       <div class="overview-item">
         <div class="count">
-          {{ total }}
+          {{ vote.brandingStatisticInfo.voteCount }}
         </div>
         <div class="name">总票数</div>
       </div>
       <div class="overview-item">
         <div class="count">
-          {{ vote.totalView }}
+          {{ vote.brandingStatisticInfo.viewCount }}
         </div>
         <div class="name">总访问量</div>
       </div>
     </div>
 
     <div class="tips">
-      <div class="item">投票时间：{{ formatTime(vote.startTime) }} {{ fromNow() }}截止</div>
-      <div class="item">每个用户单日仅能投2票，可投同一作品</div>
+      <div class="item">投票时间：{{ formatTime(vote.voteConfigInfo.voteStartTime) }} {{ fromNow() }}截止</div>
+      <div class="item">
+        <span v-if="vote.voteConfigInfo.voteRule === 1">单个用户，本次投票活动，只可以投{{vote.voteConfigInfo.ruleParams}}次，不可以重复给到1个{{vote.voteConfigInfo.voteObject ===1?'作品': '人'}}。</span>
+        <span v-else>单个用户，每{{vote.voteConfigInfo.ruleParams.split(',')[0]}}天，可以投{{vote.voteConfigInfo.ruleParams.split(',')[1]}}次。每次不可以重复给到1个{{vote.voteConfigInfo.voteObject ===1?'作品': '人'}}。</span>
+      </div>
     </div>
 
     <div class="search">
@@ -88,23 +91,23 @@ const showWorks = computed(() => {
           <span>投票区</span>
         </div>
         <div class="tab">
-          <span v-for="item in vote.sortRules" :key="item.id" :class="{ active: item.key === sort }" @click="changeSort(item.key)">
-            {{ item.name }}
+          <span v-for="item in sortRules" :key="item.value" :class="{ active: item.value === sort }" @click="changeSort(item.value)">
+            {{ item.label }}
           </span>
         </div>
       </div>
       <div class="content">
         <div v-for="item in showWorks" :key="item.id" class="card">
           <div class="img">
-            <img :src="item.cover" alt="" />
-            <div class="count">{{ item.vote }}票</div>
+            <img :src="item.imageUrl" alt="" />
+            <div class="count">{{ item.voteCount }}票</div>
           </div>
-          <div class="title text-cut-2" :class="{ 'title-active': isActive(item.title) }">
-            {{ item.title }}
+          <div class="title text-cut-2" :class="{ 'title-active': isActive(item.materialName) }">
+            {{ item.materialName }}
           </div>
           <div class="action">
             <span>详情</span>
-            <span class="primary">投票</span>
+            <span class="primary" :disabled="item.isVote" @click="ctx.emit('vote:brandingVote',item)">投票</span>
           </div>
         </div>
       </div>
@@ -138,12 +141,14 @@ const showWorks = computed(() => {
       .count {
         font-size: 18px;
         color: #080922;
+        font-weight: 600;
       }
 
       .name {
         font-size: 12px;
         color: #969696;
         margin-top: 5px;
+        font-weight: 400;
       }
     }
   }
@@ -153,7 +158,7 @@ const showWorks = computed(() => {
     background-color: #fbfbfb;
     text-align: center;
     font-size: 12px;
-    padding: 9px 0;
+    padding: 9px 5px;
     color: #969696;
     box-sizing: border-box;
 
@@ -299,7 +304,7 @@ const showWorks = computed(() => {
         /* stylelint-disable-next-line declaration-colon-space-after */
         -webkit-box-orient: vertical;
         text-overflow: ellipsis;
-        border-radius: 3px;
+        border-radius: 2px;
 
         &.title-active {
           background-color: #ffef90;
@@ -307,8 +312,13 @@ const showWorks = computed(() => {
       }
 
       .action {
+        display: flex;
+        padding: 0 5px;
+        box-sizing: border-box;
+        gap: 5px;
+
         span {
-          width: 75px;
+          flex: 1;
           height: 26px;
           display: inline-block;
           border-radius: 3px;
@@ -317,7 +327,6 @@ const showWorks = computed(() => {
           text-align: center;
           font-weight: 600;
           line-height: 26px;
-          margin-left: 5px;
           font-size: 14px;
 
           &.primary {

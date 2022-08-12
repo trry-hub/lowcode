@@ -20,13 +20,14 @@ const useTokenStore = defineStore(
       },
     },
     actions: {
-      login() {
+      login(token = '1234567890') {
         return new Promise<void>((resolve) => {
-          // 模拟登录成功，写入 token 信息
-          localStorage.setItem('token', '1234567890')
-          localStorage.setItem('failuretime', (Date.parse(new Date().toString()) / 1000 + 24 * 60 * 60).toString())
-          this.token = '1234567890'
+          this.token = token
           this.failuretime = Date.parse(new Date().toString()) / 1000 + 24 * 60 * 60
+          // 模拟登录成功，写入 token 信息
+          localStorage.setItem('token', token)
+          localStorage.setItem('failuretime', this.failuretime.toString())
+
           resolve()
         })
       },

@@ -1,5 +1,3 @@
-import momentjs from 'moment'
-
-momentjs.locale('zh-cn')
-
-export default momentjs
+import moment from 'moment'
+import 'moment/dist/locale/zh-cn'
+export default moment

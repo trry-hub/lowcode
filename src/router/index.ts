@@ -1,9 +1,13 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+import qs from 'qs'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 // import { setupLayouts } from 'virtual:generated-layouts'
 // import generatedRoutes from 'virtual:generated-pages'
 import useSettingsStore from '@/store/modules/settings'
+import useTokenStore from '@/store/modules/token'
+
+import {delUrlParam } from '@/utils/index.ts'
 
 let routes = []
 
@@ -25,12 +29,19 @@ routes = routes.flat()
 // })
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
 })
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
+  let data:any = qs.parse(window.location.href.split('?')[1])
+  if (data.token) {
+    useTokenStore().login(data.token)
+
+    let url = delUrlParam('token')
+    window.location.replace(url)
+  }
   next()
 })
 

@@ -25,10 +25,15 @@ export default ({ mode, command }) => {
         server: {
             open: true,
             proxy: {
-                '/proxy': {
-                    target: env.VITE_APP_API_BASEURL,
-                    changeOrigin: command === 'serve' && env.VITE_OPEN_PROXY === 'true',
-                    rewrite: path => path.replace(/\/proxy/, '')
+                '/gateway': {
+                    target: 'https://kshdoctor-dev3.yaomaitong.net',
+                    changeOrigin: command === 'serve' && env.VITE_OPEN_PROXY === 'true'
+                    // rewrite: path => path.replace(/\/gateway/, ''),
+                    // configure: (proxy, options) => {
+                    // proxy.on('proxyRes', function(proxyRes, req) {
+                    // console.log('RAW Response from the target', options.target + req.url)
+                    // })
+                    // }
                 }
             }
         },
