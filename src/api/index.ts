@@ -53,6 +53,8 @@ api.interceptors.response.use(
             return Promise.resolve(response.data)
         } else if (response.data.code == 401) {
             toLogin()
+        } else {
+            return Promise.reject(response.data)
         }
     },
     error => {

@@ -1,1 +1,17 @@
 // 全局样式
+:root {
+  // button
+  --van-button-primary-background-color: #4064df !important;
+  // tab
+  --van-tabs-bottom-bar-color: #4064df !important;
+  --van-tab-active-text-color: #4064df !important;
+  // dialog
+  --van-dialog-border-radius: 5px !important;
+  --van-dialog-confirm-button-text-color: #4064df !important;
+}
+
+.van-dialog__confirm,
+.van-dialog__confirm:active {
+  color: #fff !important;
+  background: #4064df !important;
+}

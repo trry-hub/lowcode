@@ -64,7 +64,7 @@ class Machine {
     const modelVos: any = {}
     models.forEach((e: any) => {
       const { key, hook } = e
-      modelVos[key] = new hook({ key: key, id: id }) 
+      modelVos[key] = new hook({ key: key, id: id })
     })
     this.__modelVos = modelVos
 
@@ -289,7 +289,7 @@ function reduceToViewMap(list = []) {
     map[key] = {
       view,
       data,
-    } 
+    }
   })
   return map
 }
@@ -298,7 +298,7 @@ function reduceToHookMap(list = []) {
   const map = {}
   list.forEach(e => {
     const { key, hook } = e
-    map[key] = hook 
+    map[key] = hook
   })
   return map
 }

@@ -1,39 +1,44 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import moment from '@/utils/momentjs'
+
 const props = defineProps<{
-  ctx: any,
+  ctx: any
   data: any
 }>()
 
 const vote = computed(() => props.data.info)
 const keyword = ref('')
 const sort = ref('default')
-const sortRules = ref([{
-  label: '默认',
-  value: 'default'
-}, {
-  label: '人气',
-  value: 'sentiment'
-}])
+const sortRules = ref([
+  {
+    label: '默认',
+    value: 'default'
+  },
+  {
+    label: '人气',
+    value: 'sentiment'
+  }
+])
 const formatTime = (time: string) => {
   return moment(time).format('YYYY-MM-DD HH:mm:ss')
 }
 const fromNow = (): string => {
   return moment(vote.value.voteConfigInfo.voteStartTime).to(vote.value.voteConfigInfo.voteEndTime)
 }
+// 投票结束
+const voteEnd = computed((): boolean => {
+  return moment().isAfter(vote.value.voteConfigInfo.voteEndTime)
+})
 const isActive = (content: string) => {
   if (!keyword.value.trim()) return false
   return content.includes(keyword.value)
-}
-const changeSort = (key: string) => {
-  sort.value = key
 }
 
 const showWorks = computed(() => {
   const works = vote.value.brandingMaterialInfos || []
   if (sort.value === 'default') return works
-  works.sort((a:any, b:any) => {
+  works.sort((a: any, b: any) => {
     return b.voteCount - a.voteCount
   })
   return works
@@ -52,7 +57,7 @@ const showWorks = computed(() => {
         <div class="count">
           {{ vote.brandingStatisticInfo.materialCount }}
         </div>
-        <div class="name">参赛选手</div>
+        <div class="name">投票{{ vote.voteConfigInfo.voteObject === 1 ? "作品" : "选手" }}</div>
       </div>
       <div class="overview-item">
         <div class="count">
@@ -69,11 +74,16 @@ const showWorks = computed(() => {
     </div>
 
     <div class="tips">
-      <div class="item">投票时间：{{ formatTime(vote.voteConfigInfo.voteStartTime) }} {{ fromNow() }}截止</div>
-      <div class="item">
-        <span v-if="vote.voteConfigInfo.voteRule === 1">单个用户，本次投票活动，只可以投{{vote.voteConfigInfo.ruleParams}}次，不可以重复给到1个{{vote.voteConfigInfo.voteObject ===1?'作品': '人'}}。</span>
-        <span v-else>单个用户，每{{vote.voteConfigInfo.ruleParams.split(',')[0]}}天，可以投{{vote.voteConfigInfo.ruleParams.split(',')[1]}}次。每次不可以重复给到1个{{vote.voteConfigInfo.voteObject ===1?'作品': '人'}}。</span>
-      </div>
+      <template v-if="voteEnd">
+        <div class="item">投票时间：{{ formatTime(vote.voteConfigInfo.voteStartTime) }} {{ fromNow() }}截止</div>
+        <div class="item">
+          <span v-if="vote.voteConfigInfo.voteRule === 1">单个用户，本次投票活动，只可以投{{ vote.voteConfigInfo.ruleParams }}次，不可以重复给到1个{{ vote.voteConfigInfo.voteObject === 1 ? '作品' : '人' }}。</span>
+          <span v-else>单个用户，每{{ vote.voteConfigInfo.ruleParams.split(',')[0] }}天，可以投{{ vote.voteConfigInfo.ruleParams.split(',')[1] }}次。每次不可以重复给到1个{{ vote.voteConfigInfo.voteObject === 1 ? '作品' : '人' }}。</span>
+        </div>
+      </template>
+      <template v-else>
+        <div class="item">本次投票已结束</div>
+      </template>
     </div>
 
     <div class="search">
@@ -90,11 +100,9 @@ const showWorks = computed(() => {
         <div class="left">
           <span>投票区</span>
         </div>
-        <div class="tab">
-          <span v-for="item in sortRules" :key="item.value" :class="{ active: item.value === sort }" @click="changeSort(item.value)">
-            {{ item.label }}
-          </span>
-        </div>
+        <van-tabs class="tab" v-model:active="sort">
+          <van-tab v-for="item in sortRules" :key="item.value" :title="item.label"></van-tab>
+        </van-tabs>
       </div>
       <div class="content">
         <div v-for="item in showWorks" :key="item.id" class="card">
@@ -106,8 +114,13 @@ const showWorks = computed(() => {
             {{ item.materialName }}
           </div>
           <div class="action">
-            <span>详情</span>
-            <span class="primary" :disabled="item.isVote" @click="ctx.emit('vote:brandingVote',item)">投票</span>
+            <!-- <template v-if="!item.materialUrl"> -->
+              <van-button class="btn detail-btn" color="#e6ecfa" size="small" @click="ctx.emit('vote:jumpDetail', item)">详情</van-button>
+              <van-button class="btn" size="small" type="primary" :disabled="item.isVote" @click="ctx.emit('vote:brandingVote', item)">{{ item.isVote ? '已投票' : '投票' }}</van-button>
+            <!-- </template> -->
+            <!-- <template v-else>
+              <van-button class="btn" size="small" type="primary" :url="item.materialUrl">查看详情</van-button>
+            </template> -->
           </div>
         </div>
       </div>
@@ -132,16 +145,23 @@ const showWorks = computed(() => {
 
   .overview {
     display: flex;
-    padding: 10px 40px;
+    padding: 10px 30px;
+    justify-content: space-between;
+    gap: 5px;
+    overflow: hidden;
 
     &-item {
       flex: 1;
       text-align: center;
+      overflow: hidden;
 
       .count {
         font-size: 18px;
         color: #080922;
         font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .name {
@@ -226,18 +246,10 @@ const showWorks = computed(() => {
         font-weight: 600;
       }
 
-      .tab {
-        display: flex;
-        justify-content: flex-end;
-
-        span {
-          width: 44px;
-          text-align: center;
-
-          &.active {
-            color: #3d61e3;
-            border-bottom: 2px solid #3d61e3;
-          }
+      :deep(.tab) {
+        &.van-tab--active {
+          color: #3d61e3;
+          border-bottom: 2px solid #3d61e3;
         }
       }
     }
@@ -280,12 +292,7 @@ const showWorks = computed(() => {
           font-size: 14px;
           width: 100%;
           line-height: 30px;
-          background:
-            linear-gradient(
-              to top,
-              rgb(0 0 0 / 50%),
-              rgb(0 0 0 / 0%)
-            );
+          background: linear-gradient(to top, rgb(0 0 0 / 50%), rgb(0 0 0 / 0%));
           text-align: right;
           padding-right: 10px;
         }
@@ -317,26 +324,23 @@ const showWorks = computed(() => {
         box-sizing: border-box;
         gap: 5px;
 
-        span {
+        :deep(.btn) {
           flex: 1;
           height: 26px;
-          display: inline-block;
           border-radius: 3px;
-          background-color: #e9ebfa;
-          color: #5a51df;
           text-align: center;
           font-weight: 600;
           line-height: 26px;
           font-size: 14px;
+          border: none;
 
-          &.primary {
-            background-color: #5a51df;
-            color: #fff;
+          &.detail-btn {
+            color: #3d61e3 !important;
           }
 
-          &.disabled {
-            background-color: #f3f3f3;
-            color: #969696;
+          &.van-button--disabled {
+            color: #c7c6cb !important;
+            background-color: #f4f3f5;
           }
         }
       }

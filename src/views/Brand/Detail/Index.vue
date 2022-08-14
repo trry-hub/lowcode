@@ -7,7 +7,7 @@ import Machine from '@/machine/core/useMachine'
 
 const route = useRoute()
 const config = {
-  id: 'page-brand-promotion',
+  id: 'page-brand-detail',
   // 模型层
   models: [
     {
@@ -20,7 +20,10 @@ const config = {
     {
       key: 'detail',
       hook: (ctx: any) => {
-        return 'READY'
+        if(ctx.model('detail')) {
+          return 'READY'
+        }
+        return 'NONE'
       }
     },
   ],
@@ -30,14 +33,10 @@ const config = {
       key: 'detail',
       view: LayerDetail,
       data: {
-        option: (ctx: any) => {
-          return {
-            imgShowType: ctx.model('detail').get("info").imgShowType,
-            imgUrls: ctx.model('detail').get("info").imgUrls
-          }
-        },
-        list: (ctx: any) => {
-          return ctx.model('detail').get('list') || []
+        info: (ctx: any) => {
+          console.log('%c [ ctx.model("detail") ]-38', 'font-size:13px; background:pink; color:#bf2c9f;', ctx.model('detail'))
+          // return ctx.model('detail').get("info")
+          return {}
         }
       }
     },
@@ -61,16 +60,9 @@ const config = {
   ],
   init: [
     {
-      key: 'init:feachData',
+      key: 'init:detail',
       hook: async (ctx: any) => {
-        ctx.model('detail').config({
-          list: [
-            { id: 1, url: 'https://img.yzcdn.cn/vant/cat.jpeg' },
-            { id: 2, url: 'https://img.yzcdn.cn/vant/cat.jpeg' },
-            { id: 3, url: 'https://img.yzcdn.cn/vant/cat.jpeg' },
-            { id: 4, url: 'https://img.yzcdn.cn/vant/cat.jpeg' }
-          ]
-        })
+        // await ctx.model('detail').fetchData(route)
       }
     },
   ]

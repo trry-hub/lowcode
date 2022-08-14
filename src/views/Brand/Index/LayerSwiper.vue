@@ -17,14 +17,13 @@ const imgList = computed(() => {
 
 <template>
   <div>
-    <van-button>test</van-button>
     <Swiper v-if="data.option.imgShowType === 1" :loop="true" :autoplay="true" :modules="[Pagination, Navigation]" :pagination="{ clickable: true }">
       <SwiperSlide v-for="item in imgList" :key="item.id">
         <img :src="item.url" alt="" />
       </SwiperSlide>
     </Swiper>
     <div v-else>
-      <img v-for="item in imgList" src="" alt="" />
+      <img v-for="item in imgList" :key="item" src="" alt="" />
     </div>
   </div>
 </template>

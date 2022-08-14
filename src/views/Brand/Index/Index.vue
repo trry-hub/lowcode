@@ -1,5 +1,5 @@
 <script lang="ts" setup name="BrandPage">
-import {useRoute} from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import VoteModel from './VoteModel'
 import LayerSwiper from './LayerSwiper.vue'
 import LayerVote from './LayerVote.vue'
@@ -7,8 +7,9 @@ import Render from '@/machine/core/Render.vue'
 import Machine from '@/machine/core/useMachine'
 
 const route = useRoute()
+const router = useRouter()
 const config = {
-  id: 'page-brand-promotion',
+  id: 'page-brand-vote',
   // 模型层
   models: [
     {
@@ -21,13 +22,16 @@ const config = {
     {
       key: 'swiper',
       hook: (ctx: any) => {
-        return 'READY'
+        return 'NONE'
       }
     },
     {
       key: 'vote',
       hook: (ctx: any) => {
-        return 'READY'
+        if (ctx.model('vote').get('info')) {
+          return 'READY'
+        }
+        return 'NONE'
       }
     }
   ],
@@ -39,12 +43,13 @@ const config = {
       data: {
         option: (ctx: any) => {
           return {
-            imgShowType: ctx.model('vote').get("info").imgShowType,
-            imgUrls: ctx.model('vote').get("info").imgUrls
+            // imgShowType: ctx.model('vote').get('info').imgShowType,
+            // imgUrls: ctx.model('vote').get('info').imgUrls
           }
         },
         list: (ctx: any) => {
-          return ctx.model('vote').get('list') || []
+          // return ctx.model('vote').get('list') || []
+          return []
         }
       }
     },
@@ -52,7 +57,8 @@ const config = {
       key: 'vote',
       view: LayerVote,
       data: {
-        info: (ctx: any) => {
+        info: function(ctx: any) {
+          console.log('%c [ ctx ]-62', 'font-size:13px; background:pink; color:#bf2c9f;', ctx.model('vote'))
           return ctx.model('vote').get('info') || {}
         }
       }
@@ -94,31 +100,31 @@ const config = {
     {
       key: 'vote:brandingVote',
       hook: async (ctx: any) => {
-        console.log('%c [ ctx ]-108', 'font-size:13px; background:pink; color:#bf2c9f;', ctx)
+        const {
+          voteConfigInfo: { voteObject }
+        } = ctx.model('vote').get('info')
+        ctx.payload.message = `您确定要给该作品${voteObject === 1 ? '作品' : '人'}吗？一经投票后不可撤回。`
         await ctx.model('vote').brandingVote(ctx.payload)
+      }
+    },
+    {
+      key: 'vote:jumpDetail',
+      hook: async (ctx: any) => {
+        await ctx.model('vote').jumpDetail(router, ctx.payload)
       }
     }
   ],
   init: [
     {
       key: 'init:swiper',
-      hook: async (ctx: any) => {
-        ctx.model('vote').config({
-          list: [
-            { id: 1, url: 'https://img.yzcdn.cn/vant/cat.jpeg' },
-            { id: 2, url: 'https://img.yzcdn.cn/vant/cat.jpeg' },
-            { id: 3, url: 'https://img.yzcdn.cn/vant/cat.jpeg' },
-            { id: 4, url: 'https://img.yzcdn.cn/vant/cat.jpeg' }
-          ]
-        })
-      }
+      hook: async (ctx: any) => {}
     },
     {
       key: 'init:vote',
       hook: async (ctx: any) => {
         await ctx.model('vote').fetchData(route)
       }
-    },
+    }
   ]
 }
 
