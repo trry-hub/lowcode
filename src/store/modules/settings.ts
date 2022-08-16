@@ -3,7 +3,7 @@ const useSettingsStore = defineStore(
   'settings',
   {
     state: () => ({
-      title: '',
+      title: ''
     }),
     actions: {
       // 设置网页标题

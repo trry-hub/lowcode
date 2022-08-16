@@ -11,7 +11,7 @@ const props = defineProps<{
       <img :src="data.info.imageUrl" alt="" />
     </p>
     <div class="title">
-      <span>{{data.info.materialName}}</span>
+      <p class="title-name">{{data.info.materialName}}</p>
       <span class="vote-count">当前获得{{data.info.voteCount}}票</span>
     </div>
     <div class="content">{{ data.info.materialIntro }}</div>
@@ -40,8 +40,18 @@ const props = defineProps<{
   justify-content: space-between;
   border-bottom: 1px solid #eee;
 
+  .title-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
+    margin-right: 10px;
+  }
+
   .vote-count {
     color: #969696;
+    overflow: hidden;
+    flex-shrink: 0;
   }
 }
 

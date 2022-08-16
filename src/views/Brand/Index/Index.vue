@@ -1,8 +1,8 @@
 <script lang="ts" setup name="BrandPage">
 import { useRoute, useRouter } from 'vue-router'
 import VoteModel from './VoteModel'
-import LayerSwiper from './LayerSwiper.vue'
 import LayerVote from './LayerVote.vue'
+import LayerEmpty from './LayerEmpty.vue'
 import Render from '@/machine/core/Render.vue'
 import Machine from '@/machine/core/useMachine'
 
@@ -20,14 +20,11 @@ const config = {
   // 状态层
   states: [
     {
-      key: 'swiper',
-      hook: (ctx: any) => {
-        return 'NONE'
-      }
-    },
-    {
       key: 'vote',
       hook: (ctx: any) => {
+        if (ctx.model('vote').get('error')) {
+          return 'ERROR'
+        }
         if (ctx.model('vote').get('info')) {
           return 'READY'
         }
@@ -38,48 +35,21 @@ const config = {
   // 图层
   layers: [
     {
-      key: 'swiper',
-      view: LayerSwiper,
-      data: {
-        option: (ctx: any) => {
-          return {
-            // imgShowType: ctx.model('vote').get('info').imgShowType,
-            // imgUrls: ctx.model('vote').get('info').imgUrls
-          }
-        },
-        list: (ctx: any) => {
-          // return ctx.model('vote').get('list') || []
-          return []
-        }
-      }
-    },
-    {
       key: 'vote',
       view: LayerVote,
       data: {
-        info: function(ctx: any) {
-          console.log('%c [ ctx ]-62', 'font-size:13px; background:pink; color:#bf2c9f;', ctx.model('vote'))
+        info: function (ctx: any) {
           return ctx.model('vote').get('info') || {}
-        }
+        },
       }
+    },
+    {
+      key: 'empty',
+      view: LayerEmpty,
+      data: {}
     }
   ],
   frames: [
-    {
-      // 轮播图
-      key: 'swiper',
-      blocks: [
-        {
-          state: 'swiper',
-          stateMaps: [
-            {
-              value: 'READY',
-              layer: 'swiper'
-            }
-          ]
-        }
-      ]
-    },
     {
       // 投票
       key: 'vote',
@@ -90,6 +60,10 @@ const config = {
             {
               value: 'READY',
               layer: 'vote'
+            },
+            {
+              value: 'ERROR',
+              layer: 'empty'
             }
           ]
         }
@@ -116,15 +90,12 @@ const config = {
   ],
   init: [
     {
-      key: 'init:swiper',
-      hook: async (ctx: any) => {}
-    },
-    {
       key: 'init:vote',
       hook: async (ctx: any) => {
         await ctx.model('vote').fetchData(route)
+        // ctx.model('vote').share(route)
       }
-    }
+    },
   ]
 }
 

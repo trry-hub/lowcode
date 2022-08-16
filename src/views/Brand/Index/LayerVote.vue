@@ -2,12 +2,26 @@
 import { computed, ref } from 'vue'
 import moment from '@/utils/momentjs'
 
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Navigation, Pagination } from 'swiper'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+
 const props = defineProps<{
   ctx: any
   data: any
 }>()
 
 const vote = computed(() => props.data.info)
+
+// 轮播数据
+const imgList = computed(() => {
+  try {
+    return JSON.parse(props.data.option.imgUrls) || []
+  } catch (error) {}
+})
+
 const keyword = ref('')
 const sort = ref('default')
 const sortRules = ref([
@@ -35,6 +49,7 @@ const isActive = (content: string) => {
   return content.includes(keyword.value)
 }
 
+// 素材数据
 const showWorks = computed(() => {
   const works = vote.value.brandingMaterialInfos || []
   if (sort.value === 'default') return works
@@ -43,10 +58,20 @@ const showWorks = computed(() => {
   })
   return works
 })
+
 </script>
 
 <template>
   <div class="vote">
+    <Swiper v-if="vote.imgShowType === 1" :loop="true" :autoplay="true" :modules="[Pagination, Navigation]" :pagination="{ clickable: true }">
+      <SwiperSlide v-for="item in imgList" :key="item.id">
+        <img :src="item.url" alt="" />
+      </SwiperSlide>
+    </Swiper>
+    <div v-else class="img-list">
+      <img v-for="item in imgList" :key="item" src="" alt="" />
+    </div>
+
     <div class="header">
       <i class="font_family icon-password" />
       <span>{{ vote.brandingTitle }}</span>
@@ -131,6 +156,21 @@ const showWorks = computed(() => {
 <style lang="scss" scoped>
 .vote {
   overflow: hidden;
+
+  .swiper {
+    height: 200px;
+    background-color: #e6e6e6;
+  }
+
+  .img-list {
+    width: 100%;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
   .header {
     margin: 24px 0;

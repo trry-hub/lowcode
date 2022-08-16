@@ -34,9 +34,7 @@ const config = {
       view: LayerDetail,
       data: {
         info: (ctx: any) => {
-          console.log('%c [ ctx.model("detail") ]-38', 'font-size:13px; background:pink; color:#bf2c9f;', ctx.model('detail'))
-          // return ctx.model('detail').get("info")
-          return {}
+          return ctx.model('detail').get("info")
         }
       }
     },
@@ -62,7 +60,7 @@ const config = {
     {
       key: 'init:detail',
       hook: async (ctx: any) => {
-        // await ctx.model('detail').fetchData(route)
+        await ctx.model('detail').fetchData(route)
       }
     },
   ]

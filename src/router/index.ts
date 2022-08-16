@@ -7,7 +7,7 @@ import 'nprogress/nprogress.css'
 import useSettingsStore from '@/store/modules/settings'
 import useTokenStore from '@/store/modules/token'
 
-import {delUrlParam } from '@/utils/index.ts'
+import { delUrlParam } from '@/utils/index'
 
 let routes = []
 
@@ -35,7 +35,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
-  let data:any = qs.parse(window.location.href.split('?')[1])
+  let data: any = qs.parse(window.location.href.split('?')[1])
   if (data.token) {
     useTokenStore().login(data.token)
 
