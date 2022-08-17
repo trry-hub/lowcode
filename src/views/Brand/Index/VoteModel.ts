@@ -37,7 +37,6 @@ class VoteModel extends BaseModel {
         data: object
       } = await api.get(URL.brandingDetail, { params });
       this.set('info', data)
-
     } catch (error: any) {
       if (error.code === 1105) {
         this.set('error', true)
@@ -74,8 +73,7 @@ class VoteModel extends BaseModel {
         const params = {
           materialId: row.id // 素材id
         }
-        const { data } = await api.post(URL.brandingVote, params)
-        console.log('%c [ data ]-70', 'font-size:13px; background:pink; color:#bf2c9f;', data)
+        await api({ method: 'post', url: URL.brandingVote, params })
         Toast('投票成功')
       } catch (error: any) {
         Toast(error.message)

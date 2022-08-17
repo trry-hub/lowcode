@@ -1,5 +1,5 @@
 <script lang="ts" setup name="BrandPage">
-import {useRoute} from 'vue-router'
+import { useRoute } from 'vue-router'
 import DetailModel from './DetailModel'
 import LayerDetail from './LayerDetail.vue'
 import Render from '@/machine/core/Render.vue'
@@ -20,7 +20,7 @@ const config = {
     {
       key: 'detail',
       hook: (ctx: any) => {
-        if(ctx.model('detail')) {
+        if (ctx.model('detail')) {
           return 'READY'
         }
         return 'NONE'
@@ -56,6 +56,12 @@ const config = {
       ]
     }
   ],
+  actions: [{
+    key: 'vote:brandingVote',
+    hook: async (ctx: any) => {
+      await ctx.model('detail').brandingVote(ctx.payload)
+    }
+  }],
   init: [
     {
       key: 'init:detail',

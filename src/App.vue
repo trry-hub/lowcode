@@ -15,7 +15,7 @@ watch(() => settingsStore.title, () => {
   const title = settingsStore.title
   document.title = title ? `${title} - ${import.meta.env.VITE_APP_TITLE}` : import.meta.env.VITE_APP_TITLE
 }, {
-  immediate: true,
+  immediate: true
 })
 
 onMounted(() => {
@@ -28,7 +28,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="app">
-    <RouterView v-if="isRouterAlive" />
-  </div>
+  <RouterView v-if="isRouterAlive" />
 </template>

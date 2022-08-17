@@ -28,8 +28,20 @@ class DetailModel extends BaseModel {
       } = await api.get(URL.materialDetail, { params });
       this.set('info', data)
     } catch (error: any) {
-      console.log('%c [ error ]-31', 'font-size:13px; background:pink; color:#bf2c9f;', error)
       Toast(error.message)
+    }
+  }
+
+
+  // 点击投票
+  async brandingVote(row: { id: string }) {
+    try {
+      const params = { materialId: row.id } // 素材id
+      await api({ method: 'post', url: URL.brandingVote, params })
+      Toast('投票成功')
+    } catch (error: any) {
+      Toast(error.message)
+      console.log('[ error ] >', error)
     }
   }
 }

@@ -19,7 +19,7 @@ const vote = computed(() => props.data.info)
 const imgList = computed(() => {
   try {
     return JSON.parse(props.data.option.imgUrls) || []
-  } catch (error) {}
+  } catch (error) { }
 })
 
 const keyword = ref('')
@@ -38,7 +38,10 @@ const formatTime = (time: string) => {
   return moment(time).format('YYYY-MM-DD HH:mm:ss')
 }
 const fromNow = (): string => {
-  return moment(vote.value.voteConfigInfo.voteStartTime).to(vote.value.voteConfigInfo.voteEndTime)
+  var a = moment(vote.value.voteConfigInfo.voteStartTime);
+  var b = moment(vote.value.voteConfigInfo.voteEndTime);
+  const surplusSeconds = a.diff(b, 'seconds')
+  return surplusSeconds < 1 ? '已' : moment(vote.value.voteConfigInfo.voteEndTime).fromNow()
 }
 // 投票结束
 const voteEnd = computed((): boolean => {
@@ -52,9 +55,9 @@ const isActive = (content: string) => {
 // 素材数据
 const showWorks = computed(() => {
   const works = vote.value.brandingMaterialInfos || []
-  if (sort.value === 'default') return works
+  const itemName = sort.value === 'default' ? 'orderIndex' : sort.value === 'default' ? 'voteCount' : ''
   works.sort((a: any, b: any) => {
-    return b.voteCount - a.voteCount
+    return b[itemName] - a[itemName]
   })
   return works
 })
@@ -63,7 +66,8 @@ const showWorks = computed(() => {
 
 <template>
   <div class="vote">
-    <Swiper v-if="vote.imgShowType === 1" :loop="true" :autoplay="true" :modules="[Pagination, Navigation]" :pagination="{ clickable: true }">
+    <Swiper v-if="vote.imgShowType === 1" :loop="true" :autoplay="true" :modules="[Pagination, Navigation]"
+      :pagination="{ clickable: true }">
       <SwiperSlide v-for="item in imgList" :key="item.id">
         <img :src="item.url" alt="" />
       </SwiperSlide>
@@ -74,7 +78,7 @@ const showWorks = computed(() => {
 
     <div class="header">
       <i class="font_family icon-password" />
-      <span>{{ vote.brandingTitle }}</span>
+      <svg-icon name="vote-icon" /> <span>{{ vote.brandingTitle }}</span>
     </div>
 
     <div class="overview">
@@ -102,8 +106,13 @@ const showWorks = computed(() => {
       <template v-if="voteEnd">
         <div class="item">投票时间：{{ formatTime(vote.voteConfigInfo.voteStartTime) }} {{ fromNow() }}截止</div>
         <div class="item">
-          <span v-if="vote.voteConfigInfo.voteRule === 1">单个用户，本次投票活动，只可以投{{ vote.voteConfigInfo.ruleParams }}次，不可以重复给到1个{{ vote.voteConfigInfo.voteObject === 1 ? '作品' : '人' }}。</span>
-          <span v-else>单个用户，每{{ vote.voteConfigInfo.ruleParams.split(',')[0] }}天，可以投{{ vote.voteConfigInfo.ruleParams.split(',')[1] }}次。每次不可以重复给到1个{{ vote.voteConfigInfo.voteObject === 1 ? '作品' : '人' }}。</span>
+          <span v-if="vote.voteConfigInfo.voteRule === 1">单个用户，本次投票活动，只可以投{{ vote.voteConfigInfo.ruleParams
+          }}次，不可以重复给到1个{{ vote.voteConfigInfo.voteObject === 1 ? '作品' : '人' }}。</span>
+          <span v-else>单个用户，每{{ vote.voteConfigInfo.ruleParams.split(',')[0] }}天，可以投{{
+              vote.voteConfigInfo.ruleParams.split(',')[1]
+          }}次。每次不可以重复给到1个{{ vote.voteConfigInfo.voteObject === 1 ? '作品' :
+    '人'
+}}。</span>
         </div>
       </template>
       <template v-else>
@@ -140,8 +149,10 @@ const showWorks = computed(() => {
           </div>
           <div class="action">
             <!-- <template v-if="!item.materialUrl"> -->
-              <van-button class="btn detail-btn" color="#e6ecfa" size="small" @click="ctx.emit('vote:jumpDetail', item)">详情</van-button>
-              <van-button class="btn" size="small" type="primary" :disabled="item.isVote" @click="ctx.emit('vote:brandingVote', item)">{{ item.isVote ? '已投票' : '投票' }}</van-button>
+            <van-button class="btn detail-btn" color="#e6ecfa" size="small" @click="ctx.emit('vote:jumpDetail', item)">
+              详情</van-button>
+            <van-button class="btn" size="small" type="primary" :disabled="item.isVote"
+              @click="ctx.emit('vote:brandingVote', item)">{{ item.isVote ? '已投票' : '投票' }}</van-button>
             <!-- </template> -->
             <!-- <template v-else>
               <van-button class="btn" size="small" type="primary" :url="item.materialUrl">查看详情</van-button>
@@ -179,6 +190,10 @@ const showWorks = computed(() => {
 
     i {
       margin-right: 5px;
+      color: #3d61e3;
+    }
+
+    .svg-icon {
       color: #3d61e3;
     }
   }
@@ -274,7 +289,7 @@ const showWorks = computed(() => {
   }
 
   .vote-main {
-    > .title {
+    >.title {
       display: flex;
       padding: 0 15px;
       height: 50px;
