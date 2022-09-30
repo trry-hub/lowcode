@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   ctx: any
   data: any
 }>()
@@ -10,7 +10,7 @@ const props = defineProps<{
   <div class="detail">
     <div>
       <p class="cover-box">
-        <img :src="data.info.imageUrl" alt="" />
+        <img :src="data.info.imageUrl" alt="">
       </p>
       <div class="title">
         <p class="title-name">{{ data.info.materialName }}</p>
@@ -21,7 +21,7 @@ const props = defineProps<{
       </div>
     </div>
     <div class="btn-wrap">
-      <van-button type="primary" class="vote-btn" @click="ctx.emit('vote:brandingVote', data.info)">投票</van-button>
+      <van-button type="primary" :disabled="!data.info?.isCanVote&&data.info.isVote" class="vote-btn" @click="ctx.emit('vote:brandingVote', data.info)">{{ !data.info?.isCanVote&&data.info.isVote? '已投票': '投票' }}</van-button>
     </div>
   </div>
 </template>
@@ -62,6 +62,10 @@ const props = defineProps<{
     flex-shrink: 0;
     font-weight: 300;
     font-size: 14px;
+
+    .svg-icon {
+      fill: #969696;
+    }
   }
 }
 

@@ -4,7 +4,7 @@ export default function createPages() {
   return Pages({
     dirs: 'src/views',
     exclude: [
-      '**/components/**/*.vue',
-    ],
+      '**/components/**/*.vue'
+    ]
   })
 }

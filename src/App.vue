@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import useSettingsStore from '@/store/modules/settings'
 
 const isRouterAlive = ref(true)
@@ -12,18 +11,10 @@ function reload() {
 }
 
 watch(() => settingsStore.title, () => {
-  const title = settingsStore.title
-  document.title = title ? `${title} - ${import.meta.env.VITE_APP_TITLE}` : import.meta.env.VITE_APP_TITLE
+  document.title = settingsStore.title
+  // document.title = title ? `${title} - ${import.meta.env.VITE_APP_TITLE}` : import.meta.env.VITE_APP_TITLE
 }, {
   immediate: true
-})
-
-onMounted(() => {
-  if (window.__wxjs_is_wkwebview) {
-    if (!window.wxShareLink) {
-      window.wxShareLink = window.location.href.split('#')[0]
-    }
-  }
 })
 </script>
 

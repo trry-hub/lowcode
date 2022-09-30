@@ -12,6 +12,9 @@ import 'normalize.css'
 
 const app = createApp(App)
 
+import installDirective from './utils/directive'
+installDirective(app)
+
 app.use(pinia)
 app.use(router)
 

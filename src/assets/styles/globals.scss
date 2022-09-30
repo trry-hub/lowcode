@@ -9,9 +9,13 @@
   --van-dialog-border-radius: 5px !important;
   --van-dialog-confirm-button-text-color: #4064df !important;
 }
-
-.van-dialog__confirm,
-.van-dialog__confirm:active {
-  color: #fff !important;
-  background: #4064df !important;
+.custom-dialog {
+  .van-button--default {
+    border: none;
+  }
+  .van-dialog__confirm,
+  .van-dialog__confirm:active {
+    color: #fff !important;
+    background: #4064df !important;
+  }
 }

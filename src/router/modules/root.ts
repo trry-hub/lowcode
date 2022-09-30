@@ -1,5 +1,3 @@
-import Brand from '@/views/Brand/Index/Index.vue'
-import BrandingDetail from '@/views/Brand/Detail/Index.vue'
 
 export default [{
   path: '/',
@@ -8,14 +6,14 @@ export default [{
 {
   path: '/brand/:brandingId',
   name: 'Brand',
-  component: Brand,
+  component: () => import('@/views/Brand/Index/Index.vue'),
   meta: {
     title: '活动'
   }
 }, {
   path: '/brand/detail/:materialId',
   name: 'BrandingDetail',
-  component: BrandingDetail,
+  component: () => import('@/views/Brand/Detail/Index.vue'),
   meta: {
     title: '活动详情'
   }

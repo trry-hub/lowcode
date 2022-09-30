@@ -1,2 +1,8 @@
 dist/
 node_modules/
+
+
+src/machine
+src/hooks
+
+src/*.d.ts

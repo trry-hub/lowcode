@@ -7,11 +7,12 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    HighlightText: typeof import('./components/HighlightText/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SvgIcon: typeof import('./components/SvgIcon/index.vue')['default']
     VanButton: typeof import('vant/es')['Button']
-    VanLoading: typeof import('vant/es')['Loading']
+    VanEmpty: typeof import('vant/es')['Empty']
     VanTab: typeof import('vant/es')['Tab']
     VanTabs: typeof import('vant/es')['Tabs']
   }

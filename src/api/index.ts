@@ -2,9 +2,11 @@ import axios from 'axios'
 // import qs from 'qs'
 // import router from '@/router/index'
 import useTokenStore from '@/store/modules/token'
+import { mapInfo } from '@/utils/mapping'
+import { linkToUrl } from '@/utils'
 
 const toLogin = () => {
-  window.open('https://kshdoctor-dev3.yaomaitong.net/login?redirect=' + encodeURIComponent(window.location.href))
+  linkToUrl(`${mapInfo().doctorUrl}/login?redirect=` + encodeURIComponent(window.location.href), '_self')
   // router.push({
   //     path: '/login',
   //     query: {
@@ -58,7 +60,9 @@ api.interceptors.response.use(
     }
   },
   error => {
-    let { message, response } = error
+    let { message } = error
+    const { response } = error
+    console.log('%c [ error ]-62', 'font-size:14px; background:pink; color:#bf2c9f;', error)
     if (message === 'Network Error') {
       message = '后端网络故障'
     } else if (message.includes('timeout')) {

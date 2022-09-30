@@ -5,6 +5,6 @@ export default function createSvgIcon(isBuild) {
   return createSvgIconsPlugin({
     iconDirs: [path.resolve(process.cwd(), 'src/assets/icons/')],
     symbolId: 'icon-[dir]-[name]',
-    svgoOptions: isBuild,
+    svgoOptions: isBuild
   })
 }

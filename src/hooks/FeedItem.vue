@@ -12,7 +12,7 @@ const props = defineProps<{
 </template>
 
 <style scoped>
-.item{
+.item {
   height: 80px;
   margin-bottom: 20px;
   background-color: #fff;

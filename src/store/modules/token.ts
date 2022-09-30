@@ -6,10 +6,10 @@ const useTokenStore = defineStore(
   {
     state: () => ({
       token: localStorage.token,
-      failuretime: localStorage.failuretime,
+      failuretime: localStorage.failuretime
     }),
     getters: {
-      isLogin: (state) => {
+      isLogin: state => {
         let retn = false
         if (state.token != null) {
           const unix = Date.parse(new Date().toString())
@@ -17,11 +17,11 @@ const useTokenStore = defineStore(
             retn = true
         }
         return retn
-      },
+      }
     },
     actions: {
       login(token = '1234567890') {
-        return new Promise<void>((resolve) => {
+        return new Promise<void>(resolve => {
           this.token = token
           this.failuretime = Date.parse(new Date().toString()) / 1000 + 24 * 60 * 60
           // 模拟登录成功，写入 token 信息
@@ -45,7 +45,7 @@ const useTokenStore = defineStore(
       //   })
       // },
       logout() {
-        return new Promise<void>((resolve) => {
+        return new Promise<void>(resolve => {
           // 模拟退出登录，清除 token 信息
           localStorage.removeItem('token')
           localStorage.removeItem('failuretime')
@@ -53,9 +53,9 @@ const useTokenStore = defineStore(
           this.failuretime = null
           resolve()
         })
-      },
-    },
-  },
+      }
+    }
+  }
 )
 
 export default useTokenStore

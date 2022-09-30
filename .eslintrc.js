@@ -11,15 +11,20 @@ module.exports = {
     module: true
   },
   extends: [
+    'eslint:recommended',
     'plugin:vue/vue3-recommended',
     'plugin:vue/vue3-strongly-recommended',
-    'eslint:recommended'
+    'plugin:@typescript-eslint/recommended',
+    './.eslintrc-auto-import.json'
   ],
   parser: 'vue-eslint-parser',
   parserOptions: {
     ecmaVersion: '2020',
     ecmaFeatures: {
       jsx: true
+    },
+    parser: {
+      ts: '@typescript-eslint/parser'
     }
   },
   rules: {

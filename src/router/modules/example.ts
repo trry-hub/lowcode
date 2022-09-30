@@ -5,5 +5,5 @@ export default {
   redirect: '/example/svgicon',
   component: ExampleLayout,
   children: [
-  ],
+  ]
 }

@@ -7,8 +7,7 @@ export default function createMock(env, isBuild) {
     localEnabled: !isBuild,
     prodEnabled: isBuild && VITE_BUILD_MOCK === 'true',
     injectCode: `
-import { setupProdMockServer } from './mockProdServer';
-setupProdMockServer();
-    `,
+      import { setupProdMockServer } from './mockProdServer';
+      setupProdMockServer();`
   })
 }

@@ -1,5 +1,10 @@
 <script setup lang="ts" name="LayerEmpty">
+import { mapInfo } from '@/utils/mapping'
+import { linkToUrl } from '@/utils'
 
+const jumpList = () => {
+  linkToUrl(`${mapInfo().doctorUrl}/academic`, '_self')
+}
 </script>
 
 <template>
@@ -10,7 +15,7 @@
       </div>
       <p class="empty-title">当前活动已下架</p>
       <p class="empty-description">去其他地方逛逛吧</p>
-      <van-button class="empty-button">查看其他活动</van-button>
+      <van-button class="empty-button" @click="jumpList">查看其他活动</van-button>
     </div>
   </div>
 </template>

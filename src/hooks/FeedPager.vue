@@ -15,14 +15,13 @@ const props = defineProps<{
 </template>
 
 <style scoped>
-
-.pager{
+.pager {
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #ccc;
-  color:green;
+  color: green;
   font-size: 24px;
 }
 

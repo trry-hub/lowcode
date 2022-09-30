@@ -9,9 +9,9 @@ const useSettingsStore = defineStore(
       // 设置网页标题
       setTitle(title: string) {
         this.title = title
-      },
-    },
-  },
+      }
+    }
+  }
 )
 
 export default useSettingsStore

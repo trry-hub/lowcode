@@ -25,7 +25,7 @@ const config = {
         }
         return 'NONE'
       }
-    },
+    }
   ],
   // 图层
   layers: [
@@ -34,10 +34,10 @@ const config = {
       view: LayerDetail,
       data: {
         info: (ctx: any) => {
-          return ctx.model('detail').get("info")
+          return ctx.model('detail').get('info')
         }
       }
-    },
+    }
   ],
   frames: [
     {
@@ -58,17 +58,17 @@ const config = {
   ],
   actions: [{
     key: 'vote:brandingVote',
-    hook: async (ctx: any) => {
+    hook: async(ctx: any) => {
       await ctx.model('detail').brandingVote(ctx.payload)
     }
   }],
   init: [
     {
       key: 'init:detail',
-      hook: async (ctx: any) => {
+      hook: async(ctx: any) => {
         await ctx.model('detail').fetchData(route)
       }
-    },
+    }
   ]
 }
 

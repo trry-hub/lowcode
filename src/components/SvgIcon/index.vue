@@ -1,16 +1,16 @@
 <script lang="ts" setup name="SvgIcon">
 defineProps({
-    name: {
-        type: String,
-        required: true
-    }
+  name: {
+    type: String,
+    required: true
+  }
 })
 </script>
 
 <template>
-    <svg class="svg-icon" aria-hidden="true">
-        <use :xlink:href="`#icon-${name}`" />
-    </svg>
+  <svg class="svg-icon" aria-hidden="true">
+    <use :xlink:href="`#icon-${name}`" />
+  </svg>
 </template>
 
 <style scoped>
